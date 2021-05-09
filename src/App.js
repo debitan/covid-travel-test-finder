@@ -1,7 +1,7 @@
 import Page from "@govuk-react/page";
 import { H1, H3 } from "@govuk-react/heading";
-import TopNav, { asTopNavAnchor } from "@govuk-react/top-nav";
-import CrownIcon from "@govuk-react/icon-crown";
+import TopNav from "@govuk-react/top-nav";
+import Footer from "@govuk-react/footer";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -9,27 +9,12 @@ import { FindTest } from "./FindTest";
 
 const queryClient = new QueryClient();
 
-const LogoAnchor = asTopNavAnchor("a");
-
-const Company = (
-  <LogoAnchor
-    href={
-      "https://www.gov.uk/guidance/how-to-quarantine-when-you-arrive-in-england"
-    }
-    target="new"
-  >
-    <TopNav.IconTitle
-      icon={<CrownIcon width="36" height="32" />}
-    ></TopNav.IconTitle>
-  </LogoAnchor>
-);
-
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Page
         header={
-          <TopNav serviceTitle="Find a covid travel test" company={Company} />
+          <TopNav serviceTitle="Find a covid travel test" company={null} />
         }
       >
         <H1>Find a covid travel test</H1>
@@ -46,6 +31,17 @@ function App() {
         </H3>
         <FindTest />
       </Page>
+      <Footer
+        copyright={null}
+        meta={
+          <Footer.MetaCustom>
+            Built by{" "}
+            <Footer.Link href="https://github.com/debitan">
+              David Matthews
+            </Footer.Link>
+          </Footer.MetaCustom>
+        }
+      />
     </QueryClientProvider>
   );
 }
