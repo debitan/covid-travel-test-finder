@@ -36,7 +36,7 @@ function App() {
         meta={
           <Footer.MetaCustom>
             Built by{" "}
-            <Footer.Link href="https://github.com/debitan">
+            <Footer.Link target="new" href="https://github.com/debitan">
               David Matthews
             </Footer.Link>
           </Footer.MetaCustom>
