@@ -8,18 +8,19 @@ import styled from "styled-components";
 import Main from "@govuk-react/main";
 import { Spinner } from "@govuk-react/icons";
 
-function SelectColumnFilter({
-  column: { filterValue, setFilter, preFilteredRows, id },
-}) {
-  // Calculate the options for filtering
-  // using the preFilteredRows
-  const options = React.useMemo(() => {
-    const options = new Set();
-    preFilteredRows.forEach((row) => {
-      options.add(row.values[id]);
-    });
-    return [...options.values()];
-  }, [id, preFilteredRows]);
+function SelectColumnFilter({ column: { filterValue, setFilter } }) {
+  const options = [
+    "Nationwide (England)",
+    "Greater London",
+    "East of England",
+    "South East",
+    "East Midlands",
+    "North West",
+    "Yorkshire and the Humber",
+    "South West",
+    "West Midlands",
+    "North East",
+  ];
 
   // Render a multi-select box
   return (
@@ -80,18 +81,22 @@ const TableInstance = ({ tableData }) => {
     ],
     []
   );
+
   const filterTypes = React.useMemo(
     () => ({
       // Or, override the default text filter to use
       // "startWith"
-      text: (rows, id, filterValue) => {
+      includes: (rows, id, filterValue) => {
         return rows.filter((row) => {
           const rowValue = row.values[id];
-          return rowValue !== undefined
-            ? String(rowValue)
+          return rowValue === "all"
+            ? true
+            : String(rowValue)
                 .toLowerCase()
-                .startsWith(String(filterValue).toLowerCase())
-            : true;
+                .startsWith(String(filterValue).toLowerCase()) ||
+                String(rowValue)
+                  .toLowerCase()
+                  .startsWith(String("Nationwide (England)").toLowerCase());
         });
       },
     }),
@@ -125,28 +130,34 @@ const TableInstance = ({ tableData }) => {
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {
                     // Loop over the headers in each row
-                    headerGroup.headers.map((column) => (
-                      // Apply the header cell props
-                      <th
-                        {...column.getHeaderProps(
-                          column.getSortByToggleProps()
-                        )}
-                      >
-                        {column.render("Header")}
-                        {/* Render the columns filter UI */}
-                        <div>
-                          {column.filter ? column.render("Filter") : null}
-                        </div>
-                        {/* Add a sort direction indicator */}
-                        <span>
-                          {column.isSorted
-                            ? column.isSortedDesc
-                              ? " 🔽"
-                              : " 🔼"
-                            : " 🔀"}
-                        </span>
-                      </th>
-                    ))
+                    headerGroup.headers.map((column) =>
+                      column.filter ? (
+                        // Apply the header cell props
+                        <th {...column.getHeaderProps()}>
+                          {column.render("Header")}
+                          {/* Render the columns filter UI */}
+                          <div>
+                            {column.filter ? column.render("Filter") : null}
+                          </div>
+                        </th>
+                      ) : (
+                        <th
+                          {...column.getHeaderProps(
+                            column.getSortByToggleProps()
+                          )}
+                        >
+                          {column.render("Header")}
+                          {/* Add a sort direction indicator */}
+                          <span>
+                            {column.isSorted
+                              ? column.isSortedDesc
+                                ? " 🔽"
+                                : " 🔼"
+                              : " 🔀"}
+                          </span>
+                        </th>
+                      )
+                    )
                   }
                 </tr>
               ))
