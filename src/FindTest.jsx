@@ -1,12 +1,43 @@
 import React, { useMemo } from "react";
 
 import { useQuery } from "react-query";
-import { useTable, useSortBy } from "react-table";
+import { useTable, useSortBy, useFilters, useGlobalFilter } from "react-table";
 
 import styled from "styled-components";
 
 import Main from "@govuk-react/main";
 import { Spinner } from "@govuk-react/icons";
+
+function SelectColumnFilter({
+  column: { filterValue, setFilter, preFilteredRows, id },
+}) {
+  // Calculate the options for filtering
+  // using the preFilteredRows
+  const options = React.useMemo(() => {
+    const options = new Set();
+    preFilteredRows.forEach((row) => {
+      options.add(row.values[id]);
+    });
+    return [...options.values()];
+  }, [id, preFilteredRows]);
+
+  // Render a multi-select box
+  return (
+    <select
+      value={filterValue}
+      onChange={(e) => {
+        setFilter(e.target.value || undefined);
+      }}
+    >
+      <option value="">All</option>
+      {options.map((option, i) => (
+        <option key={i} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  );
+}
 
 const FindTest = () => {
   const { data, isLoading, isSuccess } = useQuery("providersData", async () => {
@@ -31,6 +62,8 @@ const TableInstance = ({ tableData }) => {
       {
         Header: "Region",
         accessor: "Region",
+        Filter: SelectColumnFilter,
+        filter: "includes",
       },
       {
         Header: "Price",
@@ -47,8 +80,30 @@ const TableInstance = ({ tableData }) => {
     ],
     []
   );
+  const filterTypes = React.useMemo(
+    () => ({
+      // Or, override the default text filter to use
+      // "startWith"
+      text: (rows, id, filterValue) => {
+        return rows.filter((row) => {
+          const rowValue = row.values[id];
+          return rowValue !== undefined
+            ? String(rowValue)
+                .toLowerCase()
+                .startsWith(String(filterValue).toLowerCase())
+            : true;
+        });
+      },
+    }),
+    []
+  );
 
-  const tableInstance = useTable({ columns, data }, useSortBy);
+  const tableInstance = useTable(
+    { columns, data, filterTypes },
+    useFilters,
+    useGlobalFilter,
+    useSortBy
+  );
 
   const {
     getTableProps,
@@ -78,6 +133,10 @@ const TableInstance = ({ tableData }) => {
                         )}
                       >
                         {column.render("Header")}
+                        {/* Render the columns filter UI */}
+                        <div>
+                          {column.filter ? column.render("Filter") : null}
+                        </div>
                         {/* Add a sort direction indicator */}
                         <span>
                           {column.isSorted
@@ -136,6 +195,10 @@ const Styles = styled.div`
     border: 1px solid black;
     width: 100%;
     table-layout: fixed;
+
+    select {
+      max-width: 100%;
+    }
 
     tr {
       :last-child {
