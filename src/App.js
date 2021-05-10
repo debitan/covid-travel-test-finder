@@ -1,8 +1,9 @@
+import React, { useEffect } from "react";
+import ReactGA from "react-ga";
 import Page from "@govuk-react/page";
 import { H1, H2, H3, H4 } from "@govuk-react/heading";
 import TopNav from "@govuk-react/top-nav";
 import Footer from "@govuk-react/footer";
-
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import { FindTest } from "./FindTest";
@@ -10,6 +11,11 @@ import { FindTest } from "./FindTest";
 const queryClient = new QueryClient();
 
 function App() {
+  useEffect(() => {
+    ReactGA.initialize("G-EWMWX81JTE");
+    ReactGA.pageview(window.location.pathname);
+  });
+
   return (
     <QueryClientProvider client={queryClient}>
       <Page
