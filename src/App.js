@@ -1,5 +1,5 @@
 import Page from "@govuk-react/page";
-import { H1, H3 } from "@govuk-react/heading";
+import { H1, H2, H3, H4 } from "@govuk-react/heading";
 import TopNav from "@govuk-react/top-nav";
 import Footer from "@govuk-react/footer";
 
@@ -22,7 +22,7 @@ function App() {
         }
       >
         <H1>Find a covid travel test</H1>
-        <H3>
+        <H3 as={H2}>
           This is not an official GOV.UK service, but an{" "}
           <a
             target="new"
@@ -39,6 +39,13 @@ function App() {
           </a>
           .
         </H3>
+        <H4 as={H3}>
+          If this helps you at all, feel free to{" "}
+          <a target="new" href="https://www.buymeacoffee.com/davematthews">
+            buy me a beer
+          </a>{" "}
+          🍺
+        </H4>
         <FindTest />
       </Page>
       <Footer
