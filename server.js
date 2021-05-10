@@ -10,7 +10,7 @@ app.get("/ping", function (req, res) {
 });
 
 app.get("/", function (req, res) {
-  res.send("hello from the server");
+  res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 app.get("/data", async function (req, res) {
