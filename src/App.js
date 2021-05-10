@@ -12,7 +12,7 @@ const queryClient = new QueryClient();
 
 function App() {
   useEffect(() => {
-    ReactGA.initialize("G-EWMWX81JTE");
+    ReactGA.initialize("UA-10983903-4");
     ReactGA.pageview(window.location.pathname);
   });
 
