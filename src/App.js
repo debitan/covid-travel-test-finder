@@ -14,13 +14,23 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Page
         header={
-          <TopNav serviceTitle="Find a covid travel test" company={null} />
+          <TopNav
+            bgColor="#4c2c92"
+            serviceTitle="Find a covid travel test"
+            company={null}
+          />
         }
       >
         <H1>Find a covid travel test</H1>
         <H3>
-          This is not an official GOV.UK service, but an open source service
-          built on top of the list of providers from the{" "}
+          This is not an official GOV.UK service, but an{" "}
+          <a
+            target="new"
+            href="https://github.com/debitan/covid-travel-test-finder"
+          >
+            open source
+          </a>{" "}
+          service built on top of the list of providers from the{" "}
           <a
             target="new"
             href="https://www.gov.uk/guidance/providers-of-day-2-and-day-8-coronavirus-testing-for-international-arrivals"

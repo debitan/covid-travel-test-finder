@@ -1,12 +1,17 @@
 import React, { useMemo } from "react";
+import styled from "styled-components";
 
 import { useQuery } from "react-query";
 import { useTable, useSortBy, useFilters, useGlobalFilter } from "react-table";
 
-import styled from "styled-components";
-
 import Main from "@govuk-react/main";
-import { Spinner } from "@govuk-react/icons";
+import LoadingBox from "@govuk-react/loading-box";
+
+const ErrorMain = styled(Main)`
+  border: 0.5rem solid #d4351c;
+  padding: 1rem;
+  display: flex;
+`;
 
 function SelectColumnFilter({ column: { filterValue, setFilter } }) {
   const options = [
@@ -41,13 +46,29 @@ function SelectColumnFilter({ column: { filterValue, setFilter } }) {
 }
 
 const FindTest = () => {
-  const { data, isLoading, isSuccess } = useQuery("providersData", async () => {
-    const response = await fetch("/data");
-    const data = await response.json();
-    return data[0];
-  });
+  const { data, isLoading, isError, isSuccess } = useQuery(
+    "providersData",
+    async () => {
+      const response = await fetch("/data");
+      const data = await response.json();
+      return data[0];
+    }
+  );
 
-  if (isLoading) return <Spinner />;
+  if (isLoading)
+    return (
+      <LoadingBox loading>
+        <Main />
+      </LoadingBox>
+    );
+
+  if (isError)
+    return (
+      <ErrorMain>
+        Whoops. Something went wrong trying to get the data. Please try again.
+        In case it still doesn't work, please get in touch with the author.
+      </ErrorMain>
+    );
 
   if (isSuccess) return <TableInstance tableData={data} />;
 };
